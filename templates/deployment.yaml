@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "14"
+  generation: 19
+  labels:
+    app: helmtest-nginx
+  managedFields:
+  - apiVersion: apps/v1
+    manager: rancher
+    operation: Update
+  - apiVersion: apps/v1
+    manager: agent
+    operation: Update
+  - apiVersion: apps/v1
+    manager: kube-controller-manager
+    operation: Update
+  name: helmtest-nginx
+  namespace: bi-web
+  resourceVersion: "653149949"
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 2
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: apps.deployment-bi-web-helmtest-nginx
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: apps.deployment-bi-web-helmtest-nginx
+    spec:
+      affinity: {}
+      containers:
+      - env:
+        - name: log
+          value: stdout
+        image: nginx
+        imagePullPolicy: Always
+        name: container-0
+        ports:
+        - containerPort: 80
+          name: helmtest-nginx
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
